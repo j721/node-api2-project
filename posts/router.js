@@ -51,3 +51,7 @@ router.get("/:id/comments", (req, res)=>{
 })
 
 // DELETE request to /api/posts/:id
+
+router.delete("/:id")
+
+module.exports = router; 
