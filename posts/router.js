@@ -49,3 +49,5 @@ router.get("/:id/comments", (req, res)=>{
     res.status(500).json({message: "The comments information could not be retrieved."})
   })
 })
+
+// DELETE request to /api/posts/:id
