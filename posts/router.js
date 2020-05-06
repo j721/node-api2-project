@@ -99,6 +99,20 @@ router.delete("/:id", (req, res)=>{
   })
 })
 
+// router.delete('/:id', (req, res)=>{
+//   const { id } = req.params;
+//   Posts.remove(id)
+//   .then(post=>{
+//     if(post){
+//       res.status(200).json( post)
+//     }else{
+//       res.status(404).json({message: "The post with the specified ID does not exist."})
+//     }
+//   }).catch((err)=>{
+//     res.status(500).json({error:"The post could not be removed."})
+//   })
+// })
+
 
 //PUT request to /api/posts/:id:
 
