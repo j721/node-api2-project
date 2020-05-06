@@ -84,14 +84,60 @@ if(!title || !contents){
 // })
 
 
-router.post("/:id/comments", (req,res)=>{
-  Posts.insertComment(req.body)
-  .then(comment=>{
-    res.status(201).json(comment)
-  }).catch(err=>{
-    res.status(404).json({message:"The post with the specified ID does not exist." })
-  })
-})
+
+router.post('/:id/comments', (req, res) => {
+  const id = req.params.id
+  const commentReq = req.body
+
+  Posts.findPostComments(id)
+      .then(comment => {
+          const [commentObj] = comment
+          if (commentObj) {
+              if (commentReq.text && typeof commentReq.text === 'string'){
+                  Posts.insertComment(commentReq)
+                  .then(newId => {
+                      const CommentId = newId.id
+                      return CommentId
+                  })
+                  .then(CommentId => {
+                      Posts.findCommentById(CommentId)
+                          .then(comment => {
+                              res.status(201).json(comment)
+                          })
+                          .catch(err => {
+                              res.status(201).json({ 
+                                  error: 'Could not find comment'
+                              })
+                          })
+                  })
+                  .catch( err => {
+                      console.log(err)
+                      res.status(500).json({
+                          error: "There was an error while saving the comment to the database"})})
+              } else {          
+                  res.status(400).json({
+                      message: 'Please provide text for the comment.' })
+              }
+          } else {
+              res.status(404).json({message: 'The post with the specified ID does not exist.'})
+          }
+      })
+      .catch(err => {
+          console.log(err)
+          res.status(500).json({message: 'error retrieving the posts' });
+      });
+});
+
+
+
+// router.post("/:id/comments", (req,res)=>{
+//   Posts.insertComment(req.body)
+//   .then(comment=>{
+//     res.status(201).json(comment)
+//   }).catch(err=>{
+//     res.status(404).json({message:"The post with the specified ID does not exist." })
+//   })
+// })
 
 
 
