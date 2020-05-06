@@ -35,7 +35,6 @@ router.get("/", (req, res) => {
 })
 
 // GET request to /api/posts/:id/comments
-
 router.get("/:id/comments", (req, res)=>{
   Posts.findPostComments(req.params.id)
   .then((comments)=>{
@@ -52,6 +51,48 @@ router.get("/:id/comments", (req, res)=>{
 
 // DELETE request to /api/posts/:id
 
-router.delete("/:id")
+router.delete("/:id", (req, res)=>{
+  const id = req.params
+  Posts.findById(id)
+  .then((post)=>{
+    if(!post.length){
+      res.status(404).json({error:"The post with the specified ID does not exist." })
+    }else{
+      Posts.remove(id)
+      .then((post)=>{
+        res.status(200).json(post);
+      }).catch((err=>{
+        res.status(500).json({error: "The post could not be removed." })
+      }))
+    }
+  })
+})
+
+
+//PUT request to /api/posts/:id:
+
+router.put("/:id", (req,res)=>{
+  const { body} = req.body;
+  const {id }= req.params;
+
+  posts.findById(id)
+  .then(postId=>{
+    if(!postId.length){
+      res.status(404).json({message: 'The post with the specified ID does not exist.'})
+    }else if (!body.title || !body.contents){
+      res.status(400).json({errorMessage:  "Please provide title and contents for the post."})
+    }else{
+      Posts.update(id, body)
+      .then((post)=>{
+       res.status(200).json(post)
+      }).catch((err)=>{
+        res.status(500).json({error: "The post information could not be modified."})
+      })
+    }
+  })
+})
+
 
 module.exports = router; 
+
+
