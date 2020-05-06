@@ -1,17 +1,14 @@
 const express = require("express");
 
-const postsRouter = require("./posts/router.js");
+const router = require("./posts/router.js");
 const server = express();
 
 server.use(express.json());
 
-server.use("/api/posts", postsRouter);
+server.use("/api/posts", router);
 
 server.get("/", (req, res)=>{
-   res.send(`
-   <h2>Lambda Posts</h2>
-   <p>Welcome to Lambda Posts!</p>
-   `)
+   res.json({query: req.query, params: req.params, headers: req.headers})
 })
 
 server.listen(5000, ()=>{
