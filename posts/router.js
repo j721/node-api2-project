@@ -35,14 +35,13 @@ router.post('/:id/comments', (req, res)=>{
       })
       .catch((err)=>{
         res.status(500).json({errorMessage:"There was an error while saving the comment to the database."})
-
       })
     }
   })  
 })
 
 
-//GET  /api/posts Returns an array of all post objects saved in database.
+//GET  /api/posts                   Returns an array of all post objects saved in database.
 router.get("/", (req, res) => {
     Posts.find()
       .then(posts => {
@@ -87,7 +86,7 @@ router.get("/:id/comments", (req, res)=>{
 // DELETE request to /api/posts/:id
 
 router.delete("/:id", (req, res)=>{
-  const id = req.params
+  const { id }= req.params
   Posts.findById(id)
   .then((post)=>{
     if(!post.length){
