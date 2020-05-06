@@ -43,7 +43,28 @@ if(!title || !contents){
 
 
 // router.post('/:id/comments', (req, res)=>{
-//   const { id } = req.params;
+//   const { id } = req.params.id;
+//   const [newComment] = req.body;
+
+//   if(!newComment.text){
+//     return res.status(400).json({errorMessage: "Please provide text for the comment."})
+//   }else{
+//     Posts.insertComment([newComment])
+//     .then((comment)=>{
+//       if(comment){
+//         res.status(201).json(comment)
+//       }else{
+//         res.status(404).json({errorMessage: "The post with the specified ID does not exist."})
+//       }
+//     })
+//     .catch((error)=>{
+//       console.log(error);
+//       res.status(500).json({errorMessage:"There was an error while saving the comment to the database."})
+//     })
+//   }
+
+
+// router.post('/:id/comments', (req, res)=>{
 //   Posts.findById(id)
 //   .then((post)=>{
 //     if (!post.length){
@@ -63,6 +84,16 @@ if(!title || !contents){
 // })
 
 
+router.post("/:id/comments", (req,res)=>{
+  Posts.insertComment(req.body)
+  .then(comment=>{
+    res.status(201).json(comment)
+  }).catch(err=>{
+    res.status(404).json({message:"The post with the specified ID does not exist." })
+  })
+})
+
+
 
 // router.post("/:id/comments", (req, res)=>{
 //   const {id } = req.params;
@@ -75,26 +106,26 @@ if(!title || !contents){
 //   })
 // }
 
-router.post("/:id/comments", (req, res)=>{
-  const { id } = req.params;
-  Posts.findById(id).then((post)=>{
-    if (!post.length){
-      res.status(404).json({errorMessage: "The post with the specified ID does not exist."})
-    }else{
-      if(!req.body.text){
-        res.status(400).json({errorMessage: "Please provide text for the comment."})
-      }else{
-        Posts.insertComment(req.body)
-        .then((comment)=>{
-          res.status(201).json(comment)
-        })
-        .catch((err)=>{
-          res.status(500).json({errorMessage:"There was an error while saving the comment to the database."})
-        })
-      }
-    }
-  })
-})
+// router.post("/:id/comments", (req, res)=>{
+//   const { id } = req.params;
+//   Posts.findById(id).then((post)=>{
+//     if (!post.length){
+//       res.status(404).json({errorMessage: "The post with the specified ID does not exist."})
+//     }else{
+//       if(!req.body.text){
+//         res.status(400).json({errorMessage: "Please provide text for the comment."})
+//       }else{
+//         Posts.insertComment(req.body)
+//         .then((comment)=>{
+//           res.status(201).json(comment)
+//         })
+//         .catch((err)=>{
+//           res.status(500).json({errorMessage:"There was an error while saving the comment to the database."})
+//         })
+//       }
+//     }
+//   })
+// })
 
 
 //GET  /api/posts                   Returns an array of all post objects saved in database.
@@ -142,7 +173,7 @@ router.get("/:id/comments", (req, res)=>{
 // DELETE request to /api/posts/:id
 
 router.delete("/:id", (req, res)=>{
-  const { id }= req.params
+  const { id }= req.params.id
   Posts.findById(id)
   .then((post)=>{
     if(!post.length){
@@ -179,7 +210,7 @@ router.put("/:id", (req,res)=>{
   const { body} = req.body;
   const {id }= req.params;
 
-  posts.findById(id)
+  Posts.findById(id)
   .then(postId=>{
     if(!postId.length){
       res.status(404).json({message: 'The post with the specified ID does not exist.'})
@@ -195,6 +226,21 @@ router.put("/:id", (req,res)=>{
     }
   })
 })
+
+// router.put("/:id", (req,res)=>{
+//   const {body} = req.body;
+
+//   Posts.update(req.params.id, body)
+//   .then(post=>{
+//     if(post){
+//       res.status(200).json(post)
+//     }else{
+//       res.status(404).json({message: "The post with the specified ID does not exist."})
+//     }
+//   }).catch(err=>{
+//     res.status(500).json({"The post information could not be modified."})
+//   })
+// })
 
 
 module.exports = router; 
